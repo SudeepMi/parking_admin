@@ -5,7 +5,7 @@ import { DollarSign } from "lucide-react";
 
 import Loading from "../Loading";
 import ErrorComponent from "../ErrorComponent";
-import { privateAxios } from "../../../../parking_ui/src/api";
+import { privateAxios } from "../../api/private"
 
 const dialogTransitionConfig = {
   enter: "ease-out duration-300",
