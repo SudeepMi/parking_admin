@@ -3,22 +3,80 @@ import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { privateApi } from "../api";
+import axios from "axios";
 
 const SpotForm = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  const [places,setPlaces] = useState([])
 
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     location: "",
     spotType: "Indoor",
-    pricePerHour: 1,
+    pricePerHour: 15,
     features: [],
     carCapacity: 10,
     bikeCapacity: 10,
     imageUrls: [],
+    cordinates:[]
   });
+
+  function getCordinates(e) {
+    
+    e.preventDefault();
+    console.log(address);
+
+    let url = `https://nominatim.openstreetmap.org/search?
+    street=${address.street}
+    &city=${address.city}
+    &state=${address.state}
+    &country=${address.country}
+    &postalcode=${address.postalcode}&format=json`;
+
+    fetch(url, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Access-Control-Allow-Origin": "https://o2cj2q.csb.app"
+      }
+    })
+      .then((response ) => {
+        if( response.ok){
+          return response.json();
+        }
+        throw new Error('Something went wrong');
+      })
+      .then(
+        (data) => {
+          setName(data[0].display_name);
+          setCorrds({
+            latitude: data[0].lat,
+            longitude: data[0].lon
+          });
+        }
+        // console.log(Object.keys(data[0])
+
+        //   setCorrds(
+        //   {
+        //   'latitude':data[0].lat,
+        //   'longitude': data[0].lon
+        // });
+
+        // setInfo({
+        //   dispaly_name: data[0].dispaly_name,
+        //   icon: data[0].icon
+        // })
+      ).catch((error) => {
+        alert("Error in your input; unable to find the position");
+      });;
+  }
+
+
+ 
+
 
   // const handleInputChange = (e) => {
   //   const { name, value } = e.target;
@@ -50,8 +108,8 @@ const SpotForm = () => {
 
   const mutation = useMutation(
     async (formData) => {
-      const newFeatures = formData.features.split(",").map((feature) => feature.trim());
-      const newImages = formData.imageUrls.split(",").map((img) => img.trim());
+      const newFeatures = formData.features?.split(",").map((feature) => feature.trim());
+      const newImages = formData.imageUrls?.split(",").map((img) => img.trim());
 
       const response = await privateApi.post("/spots", {
         name: formData.name,
@@ -65,6 +123,7 @@ const SpotForm = () => {
         },
         features: newFeatures,
         imageUrls: newImages,
+        cordinates: formData.cordinates
       });
 
       return response.data;
@@ -80,9 +139,14 @@ const SpotForm = () => {
     }
   );
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    mutation.mutate(formData);
+    const res = await axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${formData.location}&key=a720b65e76f645f086d299956c1a2dc4`)
+    setPlaces(res.data.results)
+    console.log(formData.cordinates)
+    if(formData.cordinates.length>0){
+      mutation.mutate(formData);
+    }
   };
 
   return (
@@ -119,6 +183,7 @@ const SpotForm = () => {
             required
             className="w-full px-3 py-2 border bg-transparent border-gray-300 rounded-lg focus:outline-none"
           />
+          {/* <select></select> */}
         </div>
         <div className="space-y-2">
           <label className="block text-sm font-medium">Spot Type:</label>
@@ -187,6 +252,19 @@ const SpotForm = () => {
             onChange={handleInputChange}
             className="w-full px-3 py-2 border bg-transparent border-gray-300 rounded-lg focus:outline-none"
           />
+        </div>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium">Choose precise location</label>
+          <select
+           required
+           name="cordinates"
+          defaultValue={formData.cordinates}
+           onChange={handleInputChange}
+          className="w-full px-3 py-2 border bg-zinc-900 border-gray-300 rounded-lg focus:outline-none" >
+              {
+                places.map((place,key)=><option key={key} value={`${place.geometry.lat},${place.geometry.lng}`}>{place.formatted}</option>)
+              }
+          </select>
         </div>
         <button
           type="submit"
