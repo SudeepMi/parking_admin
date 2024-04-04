@@ -1,11 +1,11 @@
 import axios from "axios";
 
 const publicApi = axios.create({
-  baseURL: "http://localhost:4000",
+  baseURL: "https://parking-api-otv3.onrender.com",
 });
 
 const privateApi = axios.create({
-  baseURL: "http://localhost:4000",
+  baseURL: "https://parking-api-otv3.onrender.com",
 });
 
 privateApi.interceptors.request.use((config) => {
