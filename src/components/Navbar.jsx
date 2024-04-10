@@ -10,20 +10,20 @@ const Navbar = () => {
         {/* <h1>Smart Parking</h1> */}
         <Link to="/"><img  className="w-full h-10 object-cover object-center mb-1"  src="smartLogo.png" alt="logo" /></Link>
 
-        <ul className="flex items-center gap-4 list-none text-black ">
-          <li className="hover:opacity-80 hover:underline">
+        <ul className="flex items-center gap-8 ist-none text-black font-semibold ">
+          <li className=" hover:text-green-700 transition">
             <Link to="/">Home</Link>
           </li>
-          <li className="hover:opacity-80 hover:underline">
+          <li className="hover:text-green-700 transition">
             <Link to="/spots">Parking Places</Link>
           </li>
-          <li className="hover:opacity-80 hover:underline">
+          <li className="hover:text-green-700 transition">
             <Link to="/create-spot">Create Parking Place</Link>
           </li>
 
           <button
             onClick={() => deleteTokens()}
-            className="px-4 py-1 rounded-md border border-rose-700 hover:border-rose-600"
+            className=" bg-purple-500 hover:bg-purple-700 px-4 py-1 text-white rounded-md"
           >
             Log out
           </button>

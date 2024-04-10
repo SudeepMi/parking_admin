@@ -67,9 +67,9 @@ const PaymentModal = ({ id, totalAmount }) => {
   return (
     <>
       <div onClick={openModal} className="w-full px-4  text-gray-400 my-4 cursor-pointer rounded-full">
-        <p className="border border-purple-500 hover:border-purple-700 transition-all text-white text-center py-2 rounded-md">
+        {totalAmount>0 && <p className="border border-purple-500 hover:border-purple-700 transition-all text-white text-center py-2 rounded-md">
           Pay Amount
-        </p>
+        </p>}
       </div>
 
       <Transition appear show={isOpen} as={Fragment}>

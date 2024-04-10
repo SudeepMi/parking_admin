@@ -19,12 +19,12 @@ const TableRow = ({ reservation }) => {
   
     <tr className="text-base">
       <td className="border px-4 py-2 text-blue-600 hover:underline">
-        <Link to={`/customers/${reservation.customer._id}`}>{reservation.customer.name}</Link>
+        <Link to={`/customers/${reservation.customer._id}`}>{reservation?.customer?.name}</Link>
       </td>
       <td className="flex items-center justify-between border px-4 py-2">
         {iconMap[reservation?.vehicle?.vehicleType] ?? iconMap["car"]} {reservation?.vehicle?.licensePlate ?? "LIS"}
       </td>
-      <td className="border px-4 py-2">{reservation.parkingSpot.name}</td>
+      <td className="border px-4 py-2">{reservation?.parkingSpot?.name}</td>
       <td className="border px-4 py-2">{formattedStartTime}</td>
       <td className="border px-4 py-2">{formattedEndTime}</td>
       <td
@@ -40,7 +40,7 @@ const TableRow = ({ reservation }) => {
         <EditStatus status={reservation.status} id={reservation._id} />
       </td>
 
-      <td className="border px-4 py-2">${reservation.totalCost.toFixed(2)}</td>
+      <td className="border px-4 py-2">Rs-{reservation.totalCost.toFixed(2)}</td>
       <td className="border px-4 py-2">
         <ParkingModal id={reservation._id} />
       </td>
