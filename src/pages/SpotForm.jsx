@@ -21,10 +21,10 @@ const SpotForm = () => {
     carCapacity: 10,
     bikeCapacity: 10,
     imageUrls: [],
-    cordinates:[]
+    coordinates:[]
   });
 
-  function getCordinates(e) {
+  function getcoordinates(e) {
     
     e.preventDefault();
     console.log(address);
@@ -104,6 +104,13 @@ const SpotForm = () => {
         [name]: value,
       });
     }
+
+    if(name=="location"){
+      const res =  axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${value}&key=a720b65e76f645f086d299956c1a2dc4`).then(res=>{
+
+        setPlaces(res.data.results)
+      })
+    }
   };
 
   const mutation = useMutation(
@@ -123,7 +130,7 @@ const SpotForm = () => {
         },
         features: newFeatures,
         imageUrls: newImages,
-        cordinates: formData.cordinates
+        coordinates: formData.coordinates
       });
 
       return response.data;
@@ -141,10 +148,9 @@ const SpotForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${formData.location}&key=a720b65e76f645f086d299956c1a2dc4`)
-    setPlaces(res.data.results)
-    console.log(formData.cordinates)
-    if(formData.cordinates.length>0){
+
+
+    if(formData.coordinates){
       mutation.mutate(formData);
     }
   };
@@ -257,8 +263,8 @@ const SpotForm = () => {
           <label className="block text-sm font-medium">Choose precise location</label>
           <select
            required
-           name="cordinates"
-          defaultValue={formData.cordinates}
+           name="coordinates"
+       
            onChange={handleInputChange}
           className="w-full px-3 py-2 border bg-zinc-900 border-gray-300 rounded-lg focus:outline-none" >
               {
@@ -268,7 +274,7 @@ const SpotForm = () => {
         </div>
         <button
           type="submit"
-          onClick={handleSubmit}
+          onClick={(e)=>handleSubmit(e)}
           className="col-span-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none"
         >
           Create Parking Spot

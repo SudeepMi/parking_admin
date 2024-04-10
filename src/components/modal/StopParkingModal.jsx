@@ -5,6 +5,7 @@ import { Fragment, useState } from "react";
 import { privateApi } from "../../api";
 import Loading from "../Loading";
 import ErrorComponent from "../ErrorComponent";
+import { privateAxios } from "../../api/private";
 
 const dialogTransitionConfig = {
   enter: "ease-out duration-300",
@@ -54,6 +55,9 @@ const StopParkingModal = ({ id }) => {
     return <Loading />;
   }
 
+  const  stopParking=()=>{
+    privateAxios.stopParking
+  }
   if (isError) {
     return (
       <div>
@@ -65,7 +69,7 @@ const StopParkingModal = ({ id }) => {
   return (
     <>
       <div onClick={openModal} className="w-full px-4  text-gray-400 my-4  cursor-pointer rounded-full">
-        <p className="border border-purple-500 hover:border-purple-700 transition-all text-white text-center py-2 rounded-md">
+        <p className="border border-purple-500 hover:border-purple-700 transition-all text-white text-center py-2 rounded-md" onClick={()=>stopParking(id)}>
           Stop Parking
         </p>
       </div>

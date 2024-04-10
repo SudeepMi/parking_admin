@@ -40,10 +40,17 @@ const ParkingSpotInfo = ({ spot }) => {
     return <Loading />;
   }
 
+  const deleteParkingSpot = (id) => {
+    privateApi.delete("/spots/"+id).then(()=>{
+      location.replace("/spots")
+    })
+
+  }
+
   return (
     <div className="flex flex-col gap-4 my-6">
       {isAvailable ? (
-        <div className="flex items-center justify-between gap-4 bg-green-600 px-4 py-2 rounded-sm">
+        <div className="sm:flex items-center justify-between gap-4 bg-green-600 px-4 py-2 rounded-sm">
           <div className="flex items-center">
             <FcServices className="h-10 w-10" />
             <p className="text-2xl">Available</p>
@@ -64,12 +71,12 @@ const ParkingSpotInfo = ({ spot }) => {
         </div>
       )}
       {spot.imageUrls.length >= 1 ? (
-        <img src={spot.imageUrls[0]} alt="Parking Spot" className="w-full max-h-96" />
+        <img src={spot.imageUrls[0]} alt="Parking Spot" className="w-half h-96" />
       ) : (
-        <img src={parkingImage} alt="ok" className="w-full max-h-96" />
+        <img src={parkingImage} alt="ok" className="w-50 max-h-96" />
       )}
 
-      <div className="grid grid-cols-2 gap-10">
+      <div className="grid sm:grid-cols-2 sm:gap-10">
         <div className="">
           <h2 className="text-4xl font-semibold">{spot.name}</h2>
           <div className="text-lg text-gray-300">{spot.description}</div>
@@ -77,17 +84,17 @@ const ParkingSpotInfo = ({ spot }) => {
         </div>
 
         <div className="border border-orange-700 hover:border-orange-400 cursor-pointer transition-colors py-6 rounded">
-          <div className="flex items-center px-4 justify-between">
+          <div className="flex items-center px-8 justify-between">
             <div className="flex items-center gap-4">
-              <DollarSign className="h-10 w-10" />
               <p className="text-2xl font-semibold">Total Revenue</p>
             </div>
-            <p className="text-4xl pr-4">{spot?.revenue.toFixed(2)}</p>
+              <h2 className="font-4xl text-2xl">Rs.</h2>
+            <p className="text-4xl pr-2">{spot?.revenue.toFixed(2)}</p>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-10 my-10">
+      <div className="grid sm:grid-cols-2 gap-10 my-10">
         <div className="flex flex-col space-y-4">
           <h2 className="text-2xl">Total Capacity</h2>
           <div className="grid grid-cols-2 gap-10">
@@ -120,9 +127,15 @@ const ParkingSpotInfo = ({ spot }) => {
                 <Car className="h-10 w-10" />
                 <p className="text-4xl">{spot.reservations?.car.length ?? 0}</p>
               </div>
+              
             </div>
           </div>
         </div>
+        <div className="w-full px-4 text-gray-400 my-4 cursor-pointer rounded-full ">
+                <p className="border border-purple-500 hover:border-purple-700 transition-all text-white text-center py-2 rounded-md" onClick={()=>deleteParkingSpot(spot._id)}>
+                  Delete Parking
+                </p>
+              </div>
       </div>
     </div>
   );

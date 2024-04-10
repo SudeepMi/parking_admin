@@ -5,6 +5,7 @@ import Loading from "../components/Loading";
 import ErrorComponent from "../components/ErrorComponent";
 import PaymentModal from "../components/modal/PaymentModal";
 import StopParkingModal from "../components/modal/StopParkingModal";
+import { privateAxios, publicAxios } from "../api/private";
 
 const Parkings = () => {
   const {
@@ -19,6 +20,12 @@ const Parkings = () => {
 
   if (isLoading) {
     return <Loading />;
+  }
+
+  const deletePayment = (id)=>{
+    privateAxios.delete("/parkings/"+id )
+    location.reload();
+
   }
 
   if (isError) {
@@ -73,7 +80,7 @@ const Parkings = () => {
               <PaymentModal id={parking._id} totalAmount={parking.totalAmount.toFixed(2)} />
             ) : parking.status === "Exited" ? (
               <div className="w-full px-4 text-gray-400 my-4 cursor-pointer rounded-full">
-                <p className="border border-purple-500 hover:border-purple-700 transition-all text-white text-center py-2 rounded-md">
+                <p className="border border-purple-500 hover:border-purple-700 transition-all text-white text-center py-2 rounded-md" onClick={()=>deletePayment(parking._id)}>
                   Delete Parking
                 </p>
               </div>

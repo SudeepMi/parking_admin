@@ -96,7 +96,7 @@ const UpdatePaymentModal = ({ id, totalAmount }) => {
                         placeholder="Enter amount"
                         className="w-full bg-zinc-800 py-2 px-3 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-zinc-400"
                       />
-                      <p className="my-2 text-left">Your total bill is of ${totalAmount}</p>
+                      <p className="my-2 text-left">Your total bill is of Rs.{totalAmount}</p>
                     </form>
 
                     <div className="flex items-center justify-between gap-4">
