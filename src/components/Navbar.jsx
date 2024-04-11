@@ -6,7 +6,7 @@ const Navbar = () => {
   const { deleteTokens } = useContext(TokensContext);
   return (
     <div className="fixed top-0 w-full backdrop-blur-sm bg-gray-400">
-      <nav className="flex items-center justify-between gap-4 w-11/12 mx-auto py-4 border-b-2 border-zinc-700 ">
+      <nav className="flex items-center justify-between gap-4 w-11/12 mx-auto py-4 shadow-md">
         {/* <h1>Smart Parking</h1> */}
         <Link to="/"><img  className="w-full h-10 object-cover object-center mb-1"  src="smartLogo.png" alt="logo" /></Link>
 
