@@ -57,14 +57,14 @@ const Parkings = () => {
             {parking.status !== "Parked" && (
               <>
                 <p>exit: {parking.exitedTime ? Moment(parking.exitedTime).format("Y-M-D, h:mm a") : "N/A"}</p>
-                <p>Total Amount: ${parking.totalAmount.toFixed(2)}</p>
+                <p>Total Amount: Rs.{parking.totalAmount.toFixed(2)}</p>
                 {/* <p>Payment status: {parking?.payment?.paymentStatus}</p> */}
                 {parking?.payment?.paymentStatus !== "Successful" ? (
                   <div>
                     {parking?.payment?.remainingAmount && (
                       <>
                         <p>Payment status: {parking?.payment?.paymentStatus}</p>
-                        <p>Remaining Payment: ${parking.payment.remainingAmount.toFixed(2)}</p>
+                        <p>Remaining Payment: Rs.{parking.payment.remainingAmount.toFixed(2)}</p>
                       </>
                     )}
                   </div>
