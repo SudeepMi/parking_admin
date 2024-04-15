@@ -34,8 +34,8 @@ const Dashboard = () => {
   } = useQuery(["totalReservations"], async () => {
     const res = await privateApi.get("/reservations/total");
     return res.data.total;
-  });
-
+  })
+  
   const {
     data: totalCustomers,
     isLoading: isLoadingCustomers,
@@ -45,6 +45,7 @@ const Dashboard = () => {
     const res = await privateApi.get("/users/total");
     return res.data.total;
   });
+  console.log(totalCustomers);
 
   if (isLoadingSpots || isLoadingVehicles || isLoadingReservations || isLoadingCustomers) {
     return <Loading />;
