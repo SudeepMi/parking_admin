@@ -9,7 +9,8 @@ const SpotForm = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const [places,setPlaces] = useState([])
+  const [places, setPlaces] = useState([]);
+  const [cords,setCorrds] = useState([])
 
   const [formData, setFormData] = useState({
     name: "",
@@ -21,13 +22,11 @@ const SpotForm = () => {
     carCapacity: 10,
     bikeCapacity: 10,
     imageUrls: [],
-    coordinates:[]
+    coordinates: [],
   });
 
   function getcoordinates(e) {
-    
     e.preventDefault();
-    console.log(address);
 
     let url = `https://nominatim.openstreetmap.org/search?
     street=${address.street}
@@ -40,21 +39,21 @@ const SpotForm = () => {
       method: "POST",
       mode: "cors",
       headers: {
-        "Access-Control-Allow-Origin": "https://o2cj2q.csb.app"
-      }
+        "Access-Control-Allow-Origin": "https://o2cj2q.csb.app",
+      },
     })
-      .then((response ) => {
-        if( response.ok){
+      .then((response) => {
+        if (response.ok) {
           return response.json();
         }
-        throw new Error('Something went wrong');
+        throw new Error("Something went wrong");
       })
       .then(
         (data) => {
           setName(data[0].display_name);
           setCorrds({
             latitude: data[0].lat,
-            longitude: data[0].lon
+            longitude: data[0].lon,
           });
         }
         // console.log(Object.keys(data[0])
@@ -69,28 +68,19 @@ const SpotForm = () => {
         //   dispaly_name: data[0].dispaly_name,
         //   icon: data[0].icon
         // })
-      ).catch((error) => {
+      )
+      .catch((error) => {
         alert("Error in your input; unable to find the position");
-      });;
+      });
   }
-
-
- 
-
-
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-
-  //   setFormData({
-  //     ...formData,
-  //     [name]: value,
-  //   });
-  // };
-
-  const handleInputChange = (e) => {
+  const handleInputChange = async (e) => {
     const { name, value } = e.target;
 
-    if (name === "pricePerHour" || name === "carCapacity" || name === "bikeCapacity") {
+    if (
+      name === "pricePerHour" ||
+      name === "carCapacity" ||
+      name === "bikeCapacity"
+    ) {
       const parsedValue = parseFloat(value);
       if (!isNaN(parsedValue) && parsedValue > 0) {
         setFormData({
@@ -105,17 +95,33 @@ const SpotForm = () => {
       });
     }
 
-    if(name=="location"){
-      const res =  axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${value}&key=a720b65e76f645f086d299956c1a2dc4`).then(res=>{
+    if (name == "location") {
+      await axios
+        .get(
+          `https://api.opencagedata.com/geocode/v1/json?q=${value}&key=a720b65e76f645f086d299956c1a2dc4`
+        )
+        .then((res) => {
+          console.log(res)
+          setPlaces(res.data.results);
 
-        setPlaces(res.data.results)
-      })
+          // if(res.data.results){
+            if(places.length > 0){
+              setFormData({...formData,coordinates:[`${places[0]?.geometry?.lat},${places[0]?.geometry?.lng}`]})
+            }
+          // }
+        }).catch(e => {
+          console.log(e.message)
+        })
     }
   };
+  console.log(places)
+  console.log(formData)
 
   const mutation = useMutation(
     async (formData) => {
-      const newFeatures = formData.features?.split(",").map((feature) => feature.trim());
+      const newFeatures = formData.features
+        ?.split(",")
+        .map((feature) => feature.trim());
       const newImages = formData.imageUrls?.split(",").map((img) => img.trim());
 
       const response = await privateApi.post("/spots", {
@@ -130,7 +136,7 @@ const SpotForm = () => {
         },
         features: newFeatures,
         imageUrls: newImages,
-        coordinates: formData.coordinates
+        coordinates: formData.coordinates,
       });
 
       return response.data;
@@ -149,8 +155,7 @@ const SpotForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
-    if(formData.coordinates){
+    if (formData.coordinates) {
       mutation.mutate(formData);
     }
   };
@@ -216,7 +221,9 @@ const SpotForm = () => {
           />
         </div>
         <div className="space-y-2">
-          <label className="block text-sm font-medium">Features: (comma, seperated)</label>
+          <label className="block text-sm font-medium">
+            Features: (comma, seperated)
+          </label>
           <input
             required
             type="text"
@@ -249,7 +256,9 @@ const SpotForm = () => {
           />
         </div>
         <div className="my-2 col-span-2 space-y-2">
-          <label className="block text-sm font-medium">Image Urls: (comma seperated)</label>
+          <label className="block text-sm font-medium">
+            Image Urls: (comma seperated)
+          </label>
           <input
             required
             type="text"
@@ -260,21 +269,29 @@ const SpotForm = () => {
           />
         </div>
         <div className="space-y-2">
-          <label className="block text-sm font-medium">Choose precise location</label>
+          <label className="block text-sm font-medium">
+            Choose precise location
+          </label>
           <select
-           required
-           name="coordinates"
-       
-           onChange={handleInputChange}
-          className="w-full px-3 py-2 border bg-zinc-900 border-gray-300 rounded-lg focus:outline-none" >
-              {
-                places.map((place,key)=><option key={key} value={`${place.geometry.lat},${place.geometry.lng}`}>{place.formatted}</option>)
-              }
+            required
+            name="coordinates"
+            // defaultValue={places[0]}
+            onChange={handleInputChange}
+            className="w-full px-3 py-2 border bg-zinc-900 border-gray-300 rounded-lg focus:outline-none"
+          >
+            {places.map((place, key) => (
+              <option
+                key={key}
+                value={`${place.geometry.lat},${place.geometry.lng}`}
+              >
+                {place.formatted}
+              </option>
+            ))}
           </select>
         </div>
         <button
           type="submit"
-          onClick={(e)=>handleSubmit(e)}
+          onClick={(e) => handleSubmit(e)}
           className="col-span-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none"
         >
           Create Parking Spot
