@@ -5,7 +5,7 @@ const publicApi = axios.create({
 });
 
 const privateApi = axios.create({
-  baseURL: "http://localhost:4000",
+  baseURL: "https://parking-api-2r0z.onrender.com",
 });
 
 privateApi.interceptors.request.use((config) => {

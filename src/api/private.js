@@ -5,7 +5,7 @@ const publicAxios = axios.create({
 });
 
 const privateAxios = axios.create({
-  baseURL:"http://localhost:4000"
+  baseURL:"https://parking-api-2r0z.onrender.com"
   // baseURL: "https://parking-api-otv3.onrender.com",
 });
 
